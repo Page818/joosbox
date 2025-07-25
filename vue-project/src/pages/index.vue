@@ -61,20 +61,6 @@
           <skew-mask />
           <angle-background>
             <div id="section03">
-              <!-- 產品上傳表單 -->
-              <form
-                @submit.prevent="uploadProduct"
-                enctype="multipart/form-data"
-                class="upload-form"
-              >
-                <input v-model="product.name" placeholder="產品名稱" required />
-                <textarea v-model="product.description" placeholder="產品描述" required></textarea>
-                <input v-model="product.category" placeholder="分類 (e.g., Necklace)" />
-                <input v-model="product.tags" placeholder="標籤 (e.g., tag1,tag2)" />
-                <input v-model="product.link" placeholder="連結" required />
-                <input type="file" @change="onFileChange" accept="image/*" multiple required />
-                <button type="submit">上傳</button>
-              </form>
               <!-- 產品展示 Swiper -->
               <swiper
                 :modules="modules"
@@ -119,12 +105,10 @@ import AngleBackground from '@/components/AngleBackground.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import ProductCard from '@/components/ProductCard.vue'
-
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// 導入 Swiper 的 CSS
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -146,20 +130,10 @@ export default {
     const title2 = ref(null)
     const subtitle2 = ref(null)
     const products = ref([])
-    const product = ref({
-      name: '',
-      description: '',
-      category: '',
-      tags: '',
-      link: '',
-      image: null,
-    })
-    const files = ref([])
 
     onMounted(async () => {
       gsap.registerPlugin(ScrollTrigger)
 
-      // 第二區塊動畫
       gsap.from(title2.value, {
         scrollTrigger: {
           trigger: section2.value,
@@ -196,7 +170,6 @@ export default {
         ease: 'none',
       })
 
-      // 獲取產品數據
       await fetchProducts()
     })
 
@@ -208,44 +181,6 @@ export default {
       } catch (error) {
         console.error('獲取產品失敗:', error)
         products.value = []
-        // 後備數據
-      }
-    }
-
-    const onFileChange = (event) => {
-      files.value = Array.from(event.target.files)
-    }
-
-    const uploadProduct = async () => {
-      const formData = new FormData()
-      files.value.forEach((file) => formData.append('images', file))
-      formData.append('name', product.value.name)
-      formData.append('description', product.value.description)
-      formData.append('category', product.value.category)
-      formData.append('tags', product.value.tags)
-      formData.append('link', product.value.link)
-
-      try {
-        const response = await fetch('http://localhost:5000/api/products/upload', {
-          method: 'POST',
-          body: formData,
-        })
-        if (response.ok) {
-          await fetchProducts()
-          product.value = {
-            name: '',
-            description: '',
-            category: '',
-            tags: '',
-            link: '',
-            image: null,
-          }
-          files.value = []
-        } else {
-          console.error('上傳失敗:', await response.text())
-        }
-      } catch (error) {
-        console.error('上傳錯誤:', error)
       }
     }
 
@@ -267,10 +202,6 @@ export default {
       title2,
       subtitle2,
       products,
-      product,
-      files,
-      onFileChange,
-      uploadProduct,
       modules: [Navigation, Pagination, Autoplay],
       slidePrev,
       slideNext,
@@ -278,7 +209,6 @@ export default {
   },
   data() {
     return {
-      drawer: true,
       images: [
         '/images/img-01.jpg',
         '/images/img-02.jpg',
