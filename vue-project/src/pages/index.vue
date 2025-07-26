@@ -58,21 +58,22 @@
 
         <!-- 第三個區塊 -->
         <div class="section">
-          <skew-mask />
+          <skew-mask>
+            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 3rem">項鍊</h1>
+          </skew-mask>
+
           <angle-background>
             <div id="section03">
               <!-- 產品展示 Swiper -->
               <swiper
                 :modules="modules"
-                :slides-per-view="1.5"
+                :slides-per-view="3"
                 :space-between="30"
-                :pagination="{ clickable: true }"
-                :navigation="{
-                  nextEl: '.nav-next',
-                  prevEl: '.nav-prev',
-                }"
+                :free-mode="true"
                 :loop="true"
-                :autoplay="{ delay: 3000, disableOnInteraction: false }"
+                :autoplay="{ delay: 1, disableOnInteraction: false }"
+                :speed="6000"
+                :pagination="{ clickable: true }"
                 class="my-swiper"
                 ref="swiperRefSection03"
               >
@@ -87,11 +88,47 @@
                     :images="product.images"
                   />
                 </swiper-slide>
-                <div class="nav-prev" @click="slidePrev('section03')"></div>
-                <div class="nav-next" @click="slideNext('section03')"></div>
               </swiper>
             </div>
           </angle-background>
+        </div>
+
+        <!-- 第四個區塊 -->
+        <div class="section">
+          <skew-mask>
+            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 4rem">手鍊</h1>
+          </skew-mask>
+
+          <angle-background
+            :style="{
+              backgroundColor: '#b6bfa8',
+            }"
+          >
+            <div id="section04" ref="section04">
+              <div class="collection">
+                <ShowCard :imageSrc="currentImage" @prev="onPrev" @next="onNext" />
+              </div>
+              <div class="text-container">
+                <h1>精心挑選天然水晶</h1>
+                <h3>製作獨一無二個性手鍊</h3>
+              </div>
+            </div>
+          </angle-background>
+        </div>
+
+        <!-- 第五個區塊 -->
+        <div class="section">
+          <skew-mask></skew-mask>
+          <angle-background>
+            <div id="section05">
+              <h1>關於我們</h1>
+              <p>
+                Joo's Box
+                是一家專注於手工製作天然礦石與珍珠首飾的品牌。我們相信每一件首飾都應該是獨一無二的，就像佩戴它的人一樣。
+              </p>
+            </div>
+          </angle-background>
+          <skew-mask></skew-mask>
         </div>
       </div>
     </v-main>
@@ -105,7 +142,8 @@ import AngleBackground from '@/components/AngleBackground.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import ProductCard from '@/components/ProductCard.vue'
-import { ref, onMounted } from 'vue'
+import ShowCard from '@/components/ShowCard.vue'
+import { ref, onMounted, computed } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -115,6 +153,7 @@ import 'swiper/css/pagination'
 
 export default {
   components: {
+    ShowCard,
     AppBar,
     SkewMask,
     AngleBackground,
@@ -123,17 +162,47 @@ export default {
     ProductCard,
   },
   setup() {
+    // swiper refs
     const swiperRefSection01 = ref(null)
     const swiperRefSection03 = ref(null)
+
+    // section2 元素 & 動畫
     const section2 = ref(null)
     const background2 = ref(null)
     const title2 = ref(null)
     const subtitle2 = ref(null)
+
+    // 從後端抓的產品資料（Section03 用）
     const products = ref([])
 
+    // 從後端抓的圖片（Section01 & Section04 用）
+    const images = ref([])
+    const currentIndex = ref(0)
+
+    // 顯示當前圖片給 ShowCard 用
+    const currentImage = computed(() => {
+      if (images.value.length === 0) return ''
+      return images.value[currentIndex.value]
+    })
+
+    // 切換 ShowCard 圖片
+    const onPrev = () => {
+      if (images.value.length === 0) return
+      currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length
+    }
+    const onNext = () => {
+      if (images.value.length === 0) return
+      currentIndex.value = (currentIndex.value + 1) % images.value.length
+    }
+
+    // 滑動動畫 & 資料初始化
     onMounted(async () => {
+      await fetchImages()
+      await fetchProducts()
+
       gsap.registerPlugin(ScrollTrigger)
 
+      // title2 動畫
       gsap.from(title2.value, {
         scrollTrigger: {
           trigger: section2.value,
@@ -146,6 +215,7 @@ export default {
         ease: 'power2.out',
       })
 
+      // subtitle2 動畫
       gsap.from(subtitle2.value, {
         scrollTrigger: {
           trigger: section2.value,
@@ -159,6 +229,7 @@ export default {
         ease: 'power2.out',
       })
 
+      // background2 parallax
       gsap.to(background2.value.$el, {
         scrollTrigger: {
           trigger: section2.value,
@@ -169,21 +240,36 @@ export default {
         backgroundPosition: '50% 100%',
         ease: 'none',
       })
-
-      await fetchProducts()
     })
 
+    // 從後端抓產品資料
     const fetchProducts = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/products')
         const data = await response.json()
-        products.value = data
+        products.value = data.filter((p) => Array.isArray(p.images) && p.images.length > 0)
+        console.log('products:', products.value)
       } catch (error) {
         console.error('獲取產品失敗:', error)
         products.value = []
       }
     }
 
+    // 從後端抓圖片（第一張用來給 section01、section04）
+    const fetchImages = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products')
+        const data = await res.json()
+        images.value = data
+          .filter((p) => Array.isArray(p.images) && p.images.length > 0)
+          .map((p) => p.images[0]) // 只取第一張
+      } catch (error) {
+        console.error('抓圖片失敗:', error)
+        images.value = []
+      }
+    }
+
+    // 控制 section01 / section03 的 swiper 切換
     const slidePrev = (section) => {
       const swiperRef = section === 'section01' ? swiperRefSection01 : swiperRefSection03
       if (swiperRef.value) swiperRef.value.$el.swiper.slidePrev()
@@ -202,19 +288,13 @@ export default {
       title2,
       subtitle2,
       products,
+      images,
+      currentImage,
+      onPrev,
+      onNext,
       modules: [Navigation, Pagination, Autoplay],
       slidePrev,
       slideNext,
-    }
-  },
-  data() {
-    return {
-      images: [
-        '/images/img-01.jpg',
-        '/images/img-02.jpg',
-        '/images/img-03.jpg',
-        '/images/img-04.jpg',
-      ],
     }
   },
 }
@@ -224,13 +304,16 @@ export default {
 .main-content {
   width: calc(100% - 60px);
   margin-left: 60px;
-  background-color: #000000;
 }
 
 .section {
   position: relative;
   height: 100vh;
   overflow: hidden;
+  z-index: 0;
+  background-color: #1c1f1a;
+
+  filter: brightness(0.9) contrast(1.1);
 }
 
 #section01 {
@@ -247,7 +330,7 @@ export default {
 
 .text-container {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   text-align: center;
 }
 
@@ -259,13 +342,18 @@ export default {
     'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana,
     sans-serif;
   transform: skewY(5deg);
+  color: #3e4b2b;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 1px rgba(85, 107, 47, 0.2);
 }
 
 #section01 .subtitle {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-style: italic;
   font-family: 'Times New Roman', Times, serif;
   transform: skewY(5deg);
+  color: #5a5a5a;
+  /* margin-bottom: 2rem; */
 }
 
 #section01 .my-swiper {
@@ -275,7 +363,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 3;
-  transform: skewY(5deg);
+  /* transform: skewY(5deg); */
 }
 
 #section01 .swiper-image {
@@ -346,37 +434,45 @@ export default {
 #section03 {
   transform: skewY(5deg);
   position: absolute;
-  top: 40vh;
-}
-
-.upload-form {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 5px;
-  z-index: 10;
-}
-
-.upload-form input,
-.upload-form textarea,
-.upload-form button {
-  display: block;
-  margin: 10px 0;
-  padding: 5px;
+  height: 100%;
+  top: 0;
   width: 100%;
-  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#section03 .my-swiper {
+  width: 100%;
+  top: 15vh;
+  z-index: 3;
+}
+#section03 .product-card {
+  margin: 10px;
+}
+
+#section04 {
+  display: flex;
+  transform: skewY(5deg);
+  justify-content: space-between;
+  align-items: center;
+  /* padding-top: 5rem; */
+  height: 100%;
   box-sizing: border-box;
 }
-
-.upload-form button {
-  background-color: #7c4c20;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
+#section04 .text-container {
+  flex: 1;
+  padding-right: 2rem;
+  text-align: right;
+  width: 500px;
+  /* background: white; */
 }
-
-.upload-form button:hover {
-  background-color: #d16704;
+#section04 .collection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  height: 400px;
+  /* background: white; */
 }
 </style>

@@ -1,15 +1,11 @@
 <template>
   <div class="product-card">
-    <!-- 產品圖片區域 -->
     <div class="image-container">
-      <img :src="imageSrc" alt="Product Image" class="product-image" />
+      <img :src="imageSrc || defaultImg" alt="Product Image" class="product-image" />
     </div>
-    <!-- 產品名稱 -->
     <h2 class="product-name">{{ name }}</h2>
-    <!-- 產品描述 -->
     <p class="product-description">{{ description }}</p>
-    <!-- 連結按鈕 -->
-    <a :href="link" class="product-link" target="_blank">連結</a>
+    <a :href="link" class="product-link" target="_blank">查看商品</a>
   </div>
 </template>
 
@@ -33,54 +29,99 @@ export default {
       default: '#',
     },
   },
+  computed: {
+    defaultImg() {
+      return '/images/default-product.jpg'
+    },
+  },
 }
 </script>
 
-<style scoped>
+<style>
 .product-card {
+  background-color: #fdfaf4;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(85, 107, 47, 0.2);
+  padding: 1.5rem;
   text-align: center;
-  padding: 20px;
-  background: #2f2f2f;
-  color: #fff;
-  max-width: 400px;
-  margin: 0 auto;
-  border-radius: 5px;
-}
-
-.image-container {
+  width: 300px;
+  height: 400px;
   position: relative;
-  margin-bottom: 15px;
+  border: 1px solid #e6e2d6;
+  font-family: 'Noto Serif TC', serif;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 8px 10px 20px rgba(85, 107, 47, 0.25);
+}
+.image-container {
+  height: 200px;
+  overflow: hidden;
+
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+}
 .product-image {
   width: 100%;
-  height: auto;
-  max-height: 300px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 5px;
+  transition: transform 0.3s ease;
 }
 
+.product-image:hover {
+  transform: scale(1.05);
+}
 .product-name {
   font-size: 1.5rem;
-  margin-bottom: 10px;
+  color: #3e4b2b;
+  font-family: 'LXGW WenKai TC', cursive;
+  margin: 0.5rem 0;
 }
 
-.product-description {
+/* .product-description {
   font-size: 1rem;
-  color: #ccc;
-  margin-bottom: 15px;
+  text-align: start;
+  margin-top: 1rem;
+} */
+
+.product-description {
+  font-size: 0.95rem;
+  color: #5e5e5e;
+  text-align: left;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  min-height: 4.5rem;
 }
 
 .product-link {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #7c4c20;
-  color: white;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: block;
+  width: 160px;
+  padding: 0.75rem 1rem;
+  text-align: center;
   text-decoration: none;
-  border-radius: 5px;
+  color: #fff;
+  background-color: #556b2f; /* darkolivegreen */
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
 }
 
 .product-link:hover {
-  background-color: #d16704;
+  background-color: #6b8e23; /* yellowgreen */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
 }
 </style>

@@ -1,7 +1,10 @@
 <template>
   <div
     class="angle-background"
-    :style="{ backgroundColor: backgroundColor, backgroundImage: `url(${angleImage}` }"
+    :style="{
+      backgroundColor: backgroundColor,
+      backgroundImage: angleImage ? `url(${angleImage})` : 'none',
+    }"
   >
     <div class="content-overlay">
       <slot></slot>
@@ -36,6 +39,10 @@ export default {
   z-index: 1;
   background-size: cover;
   background-position: center;
+
+  background-blend-mode: multiply;
+  /* backdrop-filter: blur(2px); */
+  /* mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); */
 }
 
 .content-overlay {
@@ -46,6 +53,7 @@ export default {
   justify-content: center;
   align-items: center;
   color: #000;
-  transform: skewY(-5deg);
+  /* transform: skewY(-5deg); */
+  z-index: 2;
 }
 </style>
