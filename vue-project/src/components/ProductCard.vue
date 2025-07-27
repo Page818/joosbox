@@ -45,7 +45,8 @@ export default {
   padding: 1.5rem;
   text-align: center;
   width: 300px;
-  height: 400px;
+  height: auto;
+  box-sizing: border-box;
   position: relative;
   border: 1px solid #e6e2d6;
   font-family: 'Noto Serif TC', serif;
@@ -65,8 +66,13 @@ export default {
   border-radius: 8px;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
 }
 .product-image {
+  /* position: absolute; */
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -123,5 +129,69 @@ export default {
   background-color: #6b8e23; /* yellowgreen */
   transform: translateY(-2px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+@media (max-width: 1024px) {
+  .product-card {
+    max-width: 260px;
+    padding: 1.25rem;
+  }
+
+  .product-name {
+    font-size: 1.3rem;
+  }
+
+  .product-description {
+    font-size: 0.9rem;
+    min-height: 4rem;
+  }
+
+  .product-link {
+    font-size: 0.95rem;
+    width: 140px;
+    padding: 0.6rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-card {
+    max-width: 220px;
+    min-width: 180px;
+    padding: 1rem;
+  }
+
+  .product-name {
+    font-size: 1.1rem;
+  }
+
+  .product-description {
+    font-size: 0.85rem;
+    min-height: 3.5rem;
+  }
+
+  .product-link {
+    font-size: 0.9rem;
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    max-width: 180px;
+    padding: 0.8rem;
+  }
+
+  .product-name {
+    font-size: 1rem;
+  }
+
+  .product-description {
+    font-size: 0.8rem;
+    min-height: 3rem;
+  }
+
+  .product-link {
+    font-size: 0.85rem;
+    width: 110px;
+  }
 }
 </style>

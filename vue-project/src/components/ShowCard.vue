@@ -2,7 +2,7 @@
   <div class="show-card">
     <button class="nav-btn left" @click="$emit('prev')">‹</button>
 
-    <div class="image-box">
+    <div class="image-box" @click="$emit('open-lightbox')">
       <img :src="imageSrc || defaultImg" alt="Show Image" />
     </div>
 
@@ -32,8 +32,12 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
-  max-width: 500px;
-  margin: 0 auto; /* 加這行讓它在區塊內置中 */
+  /* max-width: 500px; */
+  width: 80%;
+  max-width: 80%;
+  padding: 0 1rem;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .image-box {
@@ -44,6 +48,11 @@ export default {
   border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   background-color: white;
+}
+@media (max-width: 768px) {
+  .image-box {
+    height: 60vh;
+  }
 }
 
 /* 按鈕現在是 absolute，相對 .show-card，但會疊到圖片，改用 flex 分配空間 */
