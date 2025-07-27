@@ -30,6 +30,7 @@
 - 用於點擊圖片後彈出大圖觀看，未來可應用在產品細節查看或藝廊展示
 
 📸 範例截圖：
+<img width="1920" height="1020" alt="section04-lightbox" src="https://github.com/user-attachments/assets/c8a3a5eb-b119-4d4b-907e-f207e198d1d1" />
 
 
 
