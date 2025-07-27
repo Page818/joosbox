@@ -27,7 +27,7 @@
                 class="my-swiper"
                 ref="swiperRefSection01"
               >
-                <swiper-slide v-for="(image, index) in images" :key="index">
+                <swiper-slide v-for="(image, index) in topImages" :key="index">
                   <img :src="image" alt="Carousel Image" class="swiper-image" />
                 </swiper-slide>
                 <div class="nav-prev" @click="slidePrev('section01')"></div>
@@ -120,12 +120,30 @@
         <div class="section">
           <skew-mask></skew-mask>
           <angle-background>
-            <div id="section05">
-              <h1>關於我們</h1>
-              <p>
-                Joo's Box
-                是一家專注於手工製作天然礦石與珍珠首飾的品牌。我們相信每一件首飾都應該是獨一無二的，就像佩戴它的人一樣。
-              </p>
+            <div id="section05" style=" overflow: hidden">
+
+              <div class="footer-container">
+                <h1>關於我們</h1>
+                <p>
+                  Joo's Box 是一家專注於手工製作天然礦石與珍珠首飾的品牌。
+                  <br />
+                  我們相信每一件首飾都應該是獨一無二的，就像佩戴它的人一樣。
+                </p>
+
+                <div class="social-links">
+                  <a href="https://instagram.com/your_brand" target="_blank" aria-label="Instagram">
+                    <v-icon size="30">mdi-instagram</v-icon>
+                  </a>
+                  <a href="https://facebook.com/your_brand" target="_blank" aria-label="Facebook">
+                    <v-icon size="30">mdi-facebook</v-icon>
+                  </a>
+                  <a href="https://your-shop-link.com" target="_blank" aria-label="Shop">
+                    <v-icon size="30">mdi-shopping</v-icon>
+                  </a>
+                </div>
+
+                <p class="footer-note">© 2025 Joo's Box. All rights reserved.</p>
+              </div>
             </div>
           </angle-background>
           <skew-mask></skew-mask>
@@ -147,6 +165,7 @@ import { ref, onMounted, computed } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+// 引入 Swiper 樣式
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -162,47 +181,54 @@ export default {
     ProductCard,
   },
   setup() {
-    // swiper refs
+    // Swiper 參考（控制滑動用）
     const swiperRefSection01 = ref(null)
     const swiperRefSection03 = ref(null)
 
-    // section2 元素 & 動畫
+    // 第二區塊元素：滾動動畫用
     const section2 = ref(null)
     const background2 = ref(null)
     const title2 = ref(null)
     const subtitle2 = ref(null)
 
-    // 從後端抓的產品資料（Section03 用）
+    // Section03 產品資料
     const products = ref([])
 
-    // 從後端抓的圖片（Section01 & Section04 用）
-    const images = ref([])
+    // Section01 首頁 top 區圖片（從後端抓 topImages）
+    const topImages = ref([])
+
+    // Section04 圖片 ShowCard 用
+    const showcardImages = ref([])
     const currentIndex = ref(0)
 
-    // 顯示當前圖片給 ShowCard 用
+    // 回傳目前 ShowCard 顯示圖片
     const currentImage = computed(() => {
-      if (images.value.length === 0) return ''
-      return images.value[currentIndex.value]
+      if (showcardImages.value.length === 0) return ''
+      return showcardImages.value[currentIndex.value]
     })
 
-    // 切換 ShowCard 圖片
+    // 點「上一張」切換圖片
     const onPrev = () => {
-      if (images.value.length === 0) return
-      currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length
-    }
-    const onNext = () => {
-      if (images.value.length === 0) return
-      currentIndex.value = (currentIndex.value + 1) % images.value.length
+      if (showcardImages.value.length === 0) return
+      currentIndex.value =
+        (currentIndex.value - 1 + showcardImages.value.length) % showcardImages.value.length
     }
 
-    // 滑動動畫 & 資料初始化
+    // 點「下一張」切換圖片
+    const onNext = () => {
+      if (showcardImages.value.length === 0) return
+      currentIndex.value = (currentIndex.value + 1) % showcardImages.value.length
+    }
+
+    // 畫面載入後初始化
     onMounted(async () => {
-      await fetchImages()
-      await fetchProducts()
+      await fetchProducts() // 抓產品資料 (Section03)
+      await fetchTopImages() // 抓首頁 top 輪播圖 (Section01)
+      await fetchShowcardImages() // 抓手鍊圖片 (Section04)
 
       gsap.registerPlugin(ScrollTrigger)
 
-      // title2 動畫
+      // 第二區塊標題滾動動畫
       gsap.from(title2.value, {
         scrollTrigger: {
           trigger: section2.value,
@@ -215,7 +241,7 @@ export default {
         ease: 'power2.out',
       })
 
-      // subtitle2 動畫
+      // 第二區塊副標題滾動動畫
       gsap.from(subtitle2.value, {
         scrollTrigger: {
           trigger: section2.value,
@@ -229,7 +255,7 @@ export default {
         ease: 'power2.out',
       })
 
-      // background2 parallax
+      // 第二區塊背景視差效果
       gsap.to(background2.value.$el, {
         scrollTrigger: {
           trigger: section2.value,
@@ -242,34 +268,43 @@ export default {
       })
     })
 
-    // 從後端抓產品資料
+    // 抓產品資料 (section03 用)
     const fetchProducts = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/products')
         const data = await response.json()
         products.value = data.filter((p) => Array.isArray(p.images) && p.images.length > 0)
-        console.log('products:', products.value)
       } catch (error) {
         console.error('獲取產品失敗:', error)
         products.value = []
       }
     }
 
-    // 從後端抓圖片（第一張用來給 section01、section04）
-    const fetchImages = async () => {
+    // 抓首頁圖片 (section01 用)
+    const fetchTopImages = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products')
-        const data = await res.json()
-        images.value = data
-          .filter((p) => Array.isArray(p.images) && p.images.length > 0)
-          .map((p) => p.images[0]) // 只取第一張
+        const response = await fetch('http://localhost:5000/api/topimages')
+        const data = await response.json()
+        topImages.value = data.map((item) => item.imageUrl)
       } catch (error) {
-        console.error('抓圖片失敗:', error)
-        images.value = []
+        console.error('取得首頁圖片失敗:', error)
+        topImages.value = []
       }
     }
 
-    // 控制 section01 / section03 的 swiper 切換
+    // 抓手鍊圖片 (section04 用)
+    const fetchShowcardImages = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/showcards')
+        const data = await response.json()
+        showcardImages.value = data.map((item) => item.imageUrl)
+      } catch (error) {
+        console.error('取得手鍊圖片失敗:', error)
+        showcardImages.value = []
+      }
+    }
+
+    // 控制 swiper 手動切換（section01 / section03 共用）
     const slidePrev = (section) => {
       const swiperRef = section === 'section01' ? swiperRefSection01 : swiperRefSection03
       if (swiperRef.value) swiperRef.value.$el.swiper.slidePrev()
@@ -288,7 +323,7 @@ export default {
       title2,
       subtitle2,
       products,
-      images,
+      topImages,
       currentImage,
       onPrev,
       onNext,
@@ -474,5 +509,64 @@ export default {
   width: 600px;
   height: 400px;
   /* background: white; */
+}
+
+.footer-container {
+  text-align: center;
+  color: #f5f5f5;
+  padding: 4rem 1rem;
+  position: relative;
+  background: linear-gradient(to bottom, #1c1f1a, #2a2d26); /* 深綠復古漸層 */
+}
+
+.footer-container h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #d3e5c0;
+  transform: skewY(5deg);
+}
+
+.footer-container p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #cccccc;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.social-links a {
+  color: #d3e5c0;
+  transition:
+    transform 0.2s ease,
+    color 0.3s ease;
+}
+
+.social-links a:hover {
+  transform: scale(1.2);
+  color: #ffffff;
+}
+
+.footer-note {
+  font-size: 0.9rem;
+  color: #999999;
+}
+.footer-links {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+}
+.footer-links a {
+  color: #c8d1b9;
+  margin: 0 0.5rem;
+  text-decoration: none;
+}
+.footer-links a:hover {
+  text-decoration: underline;
 }
 </style>

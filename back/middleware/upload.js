@@ -1,27 +1,14 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("cloudinary").v2;
 
-// cloudinary.config({
-// 	cloud_name: process.env.CLOUD_NAME,
-// 	api_key: process.env.API_KEY,
-// 	api_secret: process.env.API_SECRET,
-// });
-cloudinary.config({
-	cloud_name: "da1owallk",
-	api_key: "954784585335347",
-	api_secret: "5NCLEDPf8qE0-XYSN1B5yRTVOYA",
-});
+// 使用記憶體儲存（不寫入磁碟）
+const storage = multer.memoryStorage();
 
-const storage = new CloudinaryStorage({
-	cloudinary: cloudinary,
-	params: {
-		folder: "necklaces",
-		allowedFormats: ["jpg", "png", "jpeg"],
-		transformation: [{ width: 800, height: 800, crop: "limit" }],
+// 欄位名稱為 image（或 images）
+const upload = multer({
+	storage,
+	limits: {
+		fileSize: 5 * 1024 * 1024, // 最多 5MB
 	},
 });
-
-const upload = multer({ storage: storage });
 
 module.exports = upload;
