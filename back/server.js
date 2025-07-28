@@ -3,6 +3,7 @@ const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const showcardRoutes = require("./routes/showcard");
 const topImageRoutes = require("./routes/topImage");
+const footerContentRoutes = require("./routes/footerContent");
 
 const cors = require("cors");
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/api/products", productRoutes);
 app.use("/api/showcards", showcardRoutes);
 app.use("/api/topimages", topImageRoutes);
+app.use("/api/footercontent", footerContentRoutes);
 
 // 連接到數據庫
 connectDB();

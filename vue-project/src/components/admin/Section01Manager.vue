@@ -1,50 +1,50 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <h2 class="text-h5 mb-4">首頁主視覺圖片管理（Section01）</h2>
+  <v-container>
+    <h2 class="text-h5 mb-4">首頁主視覺圖片管理（Section01）</h2>
 
-        <v-file-input
-          v-model="file"
-          label="選擇圖片"
-          accept="image/*"
-          prepend-icon="mdi-image"
-          show-size
-        />
+    <!-- 上傳區 -->
+    <v-file-input
+      v-model="file"
+      label="選擇圖片"
+      accept="image/*"
+      prepend-icon="mdi-image"
+      show-size
+    />
 
-        <v-row v-if="previewImage">
-          <v-col cols="4" class="d-flex justify-center">
-            <v-card max-width="200">
-              <v-img :src="previewImage" height="150"></v-img>
-              <v-card-actions>
-                <v-btn icon @click="removePreview">
-                  <v-icon color="red">mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+    <!-- 預覽圖 -->
+    <v-row v-if="previewImage">
+      <v-col cols="4" class="d-flex justify-center">
+        <v-card max-width="200">
+          <v-img :src="previewImage" height="150" />
+          <v-card-actions>
+            <v-btn icon @click="removePreview">
+              <v-icon color="red">mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <v-btn color="primary" class="mt-4" @click="upload">上傳圖片</v-btn>
+    <!-- 上傳按鈕 -->
+    <v-btn color="primary" class="mt-4" @click="upload">上傳圖片</v-btn>
 
-        <v-divider class="my-6" />
+    <v-divider class="my-6" />
 
-        <h3 class="text-h6 mb-2">已上傳圖片</h3>
-        <v-row>
-          <v-col v-for="img in images" :key="img._id" cols="4" class="d-flex justify-center">
-            <v-card max-width="200">
-              <v-img :src="img.imageUrl" height="150" />
-              <v-card-actions>
-                <v-btn icon @click="deleteImage(img._id)">
-                  <v-icon color="red">mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+    <!-- 已上傳圖片列表 -->
+    <h3 class="text-h6 mb-2">已上傳圖片</h3>
+    <v-row>
+      <v-col v-for="img in images" :key="img._id" cols="4" class="d-flex justify-center">
+        <v-card max-width="200">
+          <v-img :src="img.imageUrl" height="150" />
+          <v-card-actions>
+            <v-btn icon @click="deleteImage(img._id)">
+              <v-icon color="red">mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -54,6 +54,7 @@ const file = ref(null)
 const previewImage = ref('')
 const images = ref([])
 
+// 預覽邏輯
 watch(file, (newFile) => {
   if (!newFile) {
     previewImage.value = ''
@@ -66,11 +67,13 @@ watch(file, (newFile) => {
   reader.readAsDataURL(newFile)
 })
 
+// 取得圖片
 const fetchImages = async () => {
   const res = await fetch('http://localhost:5000/api/topimages')
   images.value = await res.json()
 }
 
+// 上傳圖片
 const upload = async () => {
   if (!file.value) return alert('請選擇圖片')
 
@@ -93,6 +96,7 @@ const upload = async () => {
   }
 }
 
+// 刪除圖片
 const deleteImage = async (id) => {
   if (!confirm('確定要刪除這張圖片？')) return
   try {
@@ -111,6 +115,7 @@ const deleteImage = async (id) => {
   }
 }
 
+// 移除預覽
 const removePreview = () => {
   file.value = null
   previewImage.value = ''

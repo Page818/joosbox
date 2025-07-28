@@ -1,43 +1,41 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <h2 class="text-h5 mb-4">手鍊圖片上傳（Section04）</h2>
+  <v-container>
+    <h2 class="text-h5 mb-4">手鍊圖片上傳（Section04）</h2>
 
-        <v-file-input
-          v-model="file"
-          label="選擇圖片"
-          accept="image/*"
-          prepend-icon="mdi-image"
-          show-size
-        />
+    <!-- 上傳表單 -->
+    <v-file-input
+      v-model="file"
+      label="選擇圖片"
+      accept="image/*"
+      prepend-icon="mdi-image"
+      show-size
+    />
 
-        <v-btn color="primary" class="mt-4" @click="upload">上傳</v-btn>
+    <v-btn color="primary" class="mt-4" @click="upload">上傳</v-btn>
 
-        <v-divider class="my-6" />
+    <v-divider class="my-6" />
 
-        <v-row>
-          <v-col
-            v-for="card in cards"
-            :key="card._id"
-            cols="12"
-            sm="6"
-            md="4"
-            class="d-flex justify-center"
-          >
-            <v-card max-width="250">
-              <v-img :src="card.imageUrl" height="180" />
-              <v-card-actions>
-                <v-btn icon @click="deleteImage(card._id)">
-                  <v-icon color="red">mdi-delete</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+    <!-- 顯示所有卡片 -->
+    <v-row>
+      <v-col
+        v-for="card in cards"
+        :key="card._id"
+        cols="12"
+        sm="6"
+        md="4"
+        class="d-flex justify-center"
+      >
+        <v-card max-width="250">
+          <v-img :src="card.imageUrl" height="180" />
+          <v-card-actions>
+            <v-btn icon @click="deleteImage(card._id)">
+              <v-icon color="red">mdi-delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -46,6 +44,7 @@ import { ref, onMounted } from 'vue'
 const file = ref(null)
 const cards = ref([])
 
+// 取得所有卡片
 const fetchImages = async () => {
   try {
     const res = await fetch('http://localhost:5000/api/showcards')
@@ -56,6 +55,7 @@ const fetchImages = async () => {
   }
 }
 
+// 上傳卡片圖片
 const upload = async () => {
   if (!file.value) return alert('請選擇圖片')
 
@@ -79,6 +79,7 @@ const upload = async () => {
   }
 }
 
+// 刪除圖片
 const deleteImage = async (id) => {
   try {
     const res = await fetch(`http://localhost:5000/api/showcards/${id}`, {
@@ -96,14 +97,7 @@ const deleteImage = async (id) => {
   }
 }
 
-// 初始化時載入資料
 onMounted(() => {
   fetchImages()
 })
 </script>
-
-<style scoped>
-h2 {
-  margin-bottom: 20px;
-}
-</style>
