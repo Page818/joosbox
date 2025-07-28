@@ -1,0 +1,80 @@
+.admin-section {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  color: #3e4b2b;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.admin-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.2rem;
+  color: #2e3722;
+  font-family: 'Georgia', serif;
+}
+
+.admin-section .form-label {
+  font-weight: 600;
+  color: #5a5a5a;
+}
+
+.admin-section .form-control {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+/* -------------- */
+
+
+.form-block {
+  background-color: rgba(255, 255, 255, 0.88);
+  padding: 2rem;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-grid {
+  background-color: rgba(255, 255, 255, 0.92);
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.product-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.product-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #3e4b2b;
+}
+
+/* ----------------------- */
+.v-input__control {
+  background-color: #f8f8f0 !important;
+  border-radius: 8px;
+}
+
+.v-label {
+  color: #3e4b2b !important;
+  font-weight: 500;
+}
+
+.v-input--variant-outlined .v-input__control {
+  border: 1.5px solid #6d8a4d !important; /* 綠色邊框 */
+  background-color: #f8f8f0 !important; /* 柔和背景 */
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.v-input--variant-outlined.v-input--is-focused .v-input__control {
+  border-color: #88a574 !important; /* Focus 時更亮 */
+}

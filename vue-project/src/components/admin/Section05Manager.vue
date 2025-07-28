@@ -72,3 +72,9 @@ const submit = async () => {
   }
 }
 </script>
+
+
+
+<style scoped>
+@import '@/assets/css/admin-common.css';
+</style>

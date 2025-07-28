@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="product-card">
     <div class="image-container">
       <img :src="imageSrc || defaultImg" alt="Product Image" class="product-image" />
@@ -192,6 +192,166 @@ export default {
   .product-link {
     font-size: 0.85rem;
     width: 110px;
+  }
+}
+</style> -->
+
+<!-- --------------------- -->
+
+<template>
+  <div class="product-card">
+    <div class="image-container">
+      <img :src="image || defaultImg" alt="Product Image" @error="onImgError" />
+    </div>
+    <div class="card-content">
+      <h2 class="product-name">{{ name }}</h2>
+      <p class="product-description">{{ description }}</p>
+      <button class="product-link" @click="goToProduct">查看商品</button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const props = defineProps({
+  image: {
+    type: String,
+    default: '',
+  },
+  name: {
+    type: String,
+    default: '產品名稱',
+  },
+  description: {
+    type: String,
+    default: '產品描述',
+  },
+  link: {
+    type: String,
+    default: '#',
+  },
+})
+
+const defaultImg = '/images/default-product.jpg'
+
+const onImgError = (e) => {
+  e.target.src = defaultImg
+}
+
+const goToProduct = () => {
+  if (props.link && props.link !== '#') window.open(props.link, '_blank')
+}
+</script>
+
+<style scoped>
+.product-card {
+  width: 100%;
+  max-width: 360px;
+  background-color: #fefcf5;
+  border: 1.5px solid #5a573f;
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 #d6d2c4;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Noto Serif TC', serif;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 12px 12px 0 #b6b3a2;
+}
+
+.image-container {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  border-bottom: 1px solid #aaa;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.product-name {
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: #2f2f2f;
+  font-family: 'Georgia', 'Noto Serif TC', serif;
+}
+
+.product-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #5e5e5e;
+  min-height: 4.5rem;
+}
+
+.product-link {
+  align-self: flex-start;
+  background-color: #5c6b41;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  border: none;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+.product-link:hover {
+  background-color: #46532f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .product-card {
+    max-width: 280px;
+  }
+
+  .product-name {
+    font-size: 1.2rem;
+  }
+
+  .product-description {
+    font-size: 0.9rem;
+    min-height: 3.5rem;
+  }
+
+  .product-link {
+    font-size: 0.95rem;
+    padding: 0.45rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    max-width: 100%;
+  }
+
+  .product-description {
+    font-size: 0.85rem;
+  }
+
+  .product-link {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.9rem;
   }
 }
 </style>

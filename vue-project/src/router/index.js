@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Index from '../pages/index.vue'
-import Admin from '../pages/admin.vue'
-import AdminBraceletUploader from '@/pages/AdminBraceletUploader.vue'
-import AdminTopImageUploader from '@/pages/AdminTopImageUploader.vue'
+import AdminLogin from '@/pages/AdminLogin.vue'
+import AdminView from '../pages/AdminView.vue'
 
 const routes = [
   {
@@ -11,30 +10,29 @@ const routes = [
     component: Index,
   },
   {
-    path: '/collection',
-    name: 'Collection',
-    component: Index,
-  },
-  {
-    path: '/admin/showcard',
-    name: 'AdminBraceletUploader',
-    component: AdminBraceletUploader,
+    path: '/admin/login',
+    component: AdminLogin,
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: Admin,
-  },
-  {
-    path: '/admin/topimage',
-    name: 'AdminTopImageUploader',
-    component: AdminTopImageUploader,
+    component: AdminView,
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+// 全域守衛：檢查 JWT 是否存在
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('adminToken')
+  if (to.meta.requiresAuth && !token) {
+    next('/admin/login')
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -1,22 +1,23 @@
 <template>
-  <v-container>
-    <h2 class="text-h5 mb-4">首頁主視覺圖片管理（Section01）</h2>
+  <v-container class="admin-section">
+    <h2 class="section-title">首頁主視覺圖片管理（Section01）</h2>
 
-    <!-- 上傳區 -->
+    <!-- 上傳區塊 -->
     <v-file-input
       v-model="file"
       label="選擇圖片"
       accept="image/*"
       prepend-icon="mdi-image"
       show-size
+      class="mb-4"
     />
 
-    <!-- 預覽圖 -->
+    <!-- 圖片預覽 -->
     <v-row v-if="previewImage">
-      <v-col cols="4" class="d-flex justify-center">
-        <v-card max-width="200">
-          <v-img :src="previewImage" height="150" />
-          <v-card-actions>
+      <v-col cols="12" sm="6" md="4" class="d-flex justify-center">
+        <v-card class="image-card" max-width="260">
+          <v-img :src="previewImage" height="180" cover />
+          <v-card-actions class="justify-end">
             <v-btn icon @click="removePreview">
               <v-icon color="red">mdi-delete</v-icon>
             </v-btn>
@@ -26,17 +27,24 @@
     </v-row>
 
     <!-- 上傳按鈕 -->
-    <v-btn color="primary" class="mt-4" @click="upload">上傳圖片</v-btn>
+    <v-btn color="success" class="mt-4 mb-6" @click="upload">上傳圖片</v-btn>
 
     <v-divider class="my-6" />
 
     <!-- 已上傳圖片列表 -->
-    <h3 class="text-h6 mb-2">已上傳圖片</h3>
+    <h3 class="sub-title">已上傳圖片</h3>
     <v-row>
-      <v-col v-for="img in images" :key="img._id" cols="4" class="d-flex justify-center">
-        <v-card max-width="200">
-          <v-img :src="img.imageUrl" height="150" />
-          <v-card-actions>
+      <v-col
+        v-for="img in images"
+        :key="img._id"
+        cols="12"
+        sm="6"
+        md="3"
+        class="d-flex justify-center mb-4"
+      >
+        <v-card class="image-card" max-width="260">
+          <v-img :src="img.imageUrl" height="180" cover />
+          <v-card-actions class="justify-end">
             <v-btn icon @click="deleteImage(img._id)">
               <v-icon color="red">mdi-delete</v-icon>
             </v-btn>
@@ -125,3 +133,43 @@ onMounted(() => {
   fetchImages()
 })
 </script>
+
+<style scoped>
+@import '@/assets/css/admin-common.css';
+
+.image-card {
+  background-color: #fdfdf6;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(60, 60, 60, 0.08);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+}
+
+.image-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.image-card img {
+  object-fit: contain;
+  width: 100%;
+  height: 200px;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #3e4b2b;
+  margin-bottom: 1.5rem;
+  font-family: 'Georgia', serif;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #5a5a5a;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+</style>

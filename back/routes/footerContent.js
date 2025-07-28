@@ -1,15 +1,14 @@
 // routes/footerContent.js
-import express from "express";
-import FooterContent from "../models/footerContent.js";
+const express = require("express");
+const FooterContent = require("../models/footerContent");
 
 const router = express.Router();
 
-// 取得 Footer 資料（只有一筆）
+// 取得 Footer 資料
 router.get("/", async (req, res) => {
 	try {
 		let content = await FooterContent.findOne();
 		if (!content) {
-			// 若不存在，建立一筆預設資料
 			content = await FooterContent.create({
 				text: "歡迎來到 JOO’s BOX",
 				links: [],
@@ -37,4 +36,4 @@ router.put("/:id", async (req, res) => {
 	}
 });
 
-export default router;
+module.exports = router; // ✅ 用 CommonJS 匯出

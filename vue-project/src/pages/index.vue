@@ -57,14 +57,14 @@
         </div>
 
         <!-- 第三個區塊 -->
-        <div class="section">
+        <!-- <div class="section">
           <skew-mask>
             <h1 style="font-size: 4rem; font-weight: normal; margin-top: 3rem">項鍊</h1>
           </skew-mask>
 
           <angle-background>
             <div id="section03">
-              <!-- 產品展示 Swiper -->
+
               <swiper
                 :modules="modules"
                 :slides-per-view="3"
@@ -97,6 +97,47 @@
               </swiper>
             </div>
           </angle-background>
+        </div> -->
+        <div class="section">
+          <skew-mask>
+            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 3rem">項鍊</h1>
+          </skew-mask>
+
+          <angle-background backgroundColor="#b6bfa8">
+            <div id="section03">
+              <!-- 產品展示 Swiper -->
+              <swiper
+                :modules="modules"
+                :slides-per-view="3"
+                :free-mode="true"
+                :loop="true"
+                :autoplay="{ delay: 1, disableOnInteraction: false }"
+                :speed="6000"
+                :pagination="{ clickable: true }"
+                :breakpoints="{
+                  0: { slidesPerView: 1, spaceBetween: 0 },
+                  600: { slidesPerView: 1.2, spaceBetween: 10 },
+                  768: { slidesPerView: 2, spaceBetween: 20 },
+                  1024: { slidesPerView: 3, spaceBetween: 30 },
+                  1440: { slidesPerView: 3.5, spaceBetween: 30 },
+                }"
+                class="my-swiper"
+                ref="swiperRefSection03"
+              >
+                <swiper-slide v-for="product in products" :key="product._id">
+                  <product-card
+                    :image="product.images[0]"
+                    :name="product.name"
+                    :description="product.description"
+                    :category="product.category"
+                    :tags="product.tags"
+                    :link="product.link"
+                    :images="product.images"
+                  />
+                </swiper-slide>
+              </swiper>
+            </div>
+          </angle-background>
         </div>
 
         <!-- 第四個區塊 -->
@@ -107,7 +148,7 @@
 
           <angle-background
             :style="{
-              backgroundColor: '#b6bfa8',
+              backgroundColor: '#e0e0e0',
             }"
           >
             <div id="section04" ref="section04">
@@ -140,21 +181,25 @@
             <div id="section05" style="overflow: hidden; padding-top: 8rem">
               <div class="footer-container">
                 <h1>關於我們</h1>
-                <p>
-                  Joo's Box 是一家專注於手工製作天然礦石與珍珠首飾的品牌。
-                  <br />
-                  我們相信每一件首飾都應該是獨一無二的，就像佩戴它的人一樣。
-                </p>
 
+                <!-- 品牌介紹文字：動態資料 -->
+                <p>{{ footerContent.text }}</p>
+
+                <!-- 社群連結：動態產生 -->
                 <div class="social-links">
-                  <a href="https://instagram.com/your_brand" target="_blank" aria-label="Instagram">
-                    <v-icon size="30">mdi-instagram</v-icon>
-                  </a>
-                  <a href="https://facebook.com/your_brand" target="_blank" aria-label="Facebook">
-                    <v-icon size="30">mdi-facebook</v-icon>
-                  </a>
-                  <a href="https://your-shop-link.com" target="_blank" aria-label="Shop">
-                    <v-icon size="30">mdi-shopping</v-icon>
+                  <a
+                    v-for="(link, index) in footerContent.links"
+                    :key="index"
+                    :href="link.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :aria-label="link.label"
+                  >
+                    <v-icon size="30" v-if="iconMap[link.label]">
+                      {{ iconMap[link.label] }}
+                    </v-icon>
+                    <!-- 沒對應 icon 就顯示文字 -->
+                    <span v-else>{{ link.label }}</span>
                   </a>
                 </div>
 
@@ -174,7 +219,7 @@ import AppBar from '@/layouts/AppBar.vue'
 import SkewMask from '@/components/SkewMask.vue'
 import AngleBackground from '@/components/AngleBackground.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Pagination, Autoplay } from 'swiper/modules'
+import { Navigation, Pagination, Autoplay, FreeMode } from 'swiper/modules'
 import ProductCard from '@/components/ProductCard.vue'
 import ShowCard from '@/components/ShowCard.vue'
 import { ref, onMounted, computed } from 'vue'
@@ -187,6 +232,7 @@ import VueEasyLightbox from 'vue-easy-lightbox'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import 'swiper/css/free-mode'
 
 export default {
   components: {
@@ -200,8 +246,22 @@ export default {
     VueEasyLightbox,
   },
   setup() {
-    const images = computed(() => showcardImages.value)
+    // footer 內容
+    const footerContent = ref({
+      text: '',
+      links: [],
+    })
+    // label → icon 對應表
+    const iconMap = {
+      Instagram: 'mdi-instagram',
+      Facebook: 'mdi-facebook',
+      Email: 'mdi-email',
+      Shopee: 'mdi-shopping',
+      Shop: 'mdi-shopping',
+    }
 
+    const images = computed(() => showcardImages.value)
+    // section04 燈箱
     const lightboxVisible = ref(false)
     function openLightbox() {
       lightboxVisible.value = true
@@ -250,6 +310,7 @@ export default {
       await fetchProducts() // 抓產品資料 (Section03)
       await fetchTopImages() // 抓首頁 top 輪播圖 (Section01)
       await fetchShowcardImages() // 抓手鍊圖片 (Section04)
+      await fetchFooter() //抓 footer 內容 (Section05)
 
       gsap.registerPlugin(ScrollTrigger)
 
@@ -292,16 +353,34 @@ export default {
         ease: 'none',
       })
     })
+    // 抓 footer 內容 (section05 用)
+    const fetchFooter = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/footercontent')
+        const data = await res.json()
+        footerContent.value = data
+      } catch (err) {
+        console.error('取得 footer 資料失敗:', err)
+      }
+    }
 
     // 抓產品資料 (section03 用)
+    // const fetchProducts = async () => {
+    //   try {
+    //     const response = await fetch('http://localhost:5000/api/products')
+    //     const data = await response.json()
+    //     products.value = data.filter((p) => Array.isArray(p.images) && p.images.length > 0)
+    //   } catch (error) {
+    //     console.error('獲取產品失敗:', error)
+    //     products.value = []
+    //   }
+    // }
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products')
-        const data = await response.json()
-        products.value = data.filter((p) => Array.isArray(p.images) && p.images.length > 0)
-      } catch (error) {
-        console.error('獲取產品失敗:', error)
-        products.value = []
+        const res = await fetch('http://localhost:5000/api/products')
+        products.value = await res.json()
+      } catch (err) {
+        console.error('取得商品失敗:', err)
       }
     }
 
@@ -352,12 +431,14 @@ export default {
       currentImage,
       onPrev,
       onNext,
-      modules: [Navigation, Pagination, Autoplay],
+      modules: [Navigation, Pagination, Autoplay, FreeMode],
       slidePrev,
       slideNext,
       lightboxVisible,
       openLightbox,
       images,
+      footerContent,
+      iconMap,
     }
   },
 }
