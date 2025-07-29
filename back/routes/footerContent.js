@@ -1,6 +1,6 @@
 // routes/footerContent.js
 const express = require("express");
-const FooterContent = require("../models/footerContent");
+const FooterContent = require("../models/FooterContent");
 
 const router = express.Router();
 
@@ -9,31 +9,31 @@ router.get("/", async (req, res) => {
 	try {
 		let content = await FooterContent.findOne();
 		if (!content) {
-			content = await FooterContent.create({
-				text: "歡迎來到 JOO’s BOX",
-				links: [],
-			});
+			content = await FooterContent.create({ text: "", links: [] });
 		}
 		res.json(content);
 	} catch (err) {
-		res.status(500).send("伺服器錯誤");
+		console.error("GET /footercontent 錯誤:", err);
+		res.status(500).json({ error: "伺服器錯誤" });
 	}
 });
 
 // 更新 Footer 資料
-router.put("/:id", async (req, res) => {
+router.put("/", async (req, res) => {
 	try {
-		const updated = await FooterContent.findByIdAndUpdate(
-			req.params.id,
-			req.body,
-			{
-				new: true,
-			}
-		);
-		res.json(updated);
+		let content = await FooterContent.findOne();
+		if (!content) {
+			content = await FooterContent.create(req.body);
+		} else {
+			content.text = req.body.text;
+			content.links = req.body.links;
+			await content.save();
+		}
+		res.json(content);
 	} catch (err) {
-		res.status(500).send("更新失敗");
+		console.error("PUT /footercontent 錯誤:", err);
+		res.status(500).json({ error: "更新失敗" });
 	}
 });
 
-module.exports = router; // ✅ 用 CommonJS 匯出
+module.exports = router;

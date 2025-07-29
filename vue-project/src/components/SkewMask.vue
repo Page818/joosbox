@@ -49,6 +49,17 @@ export default {
   background-size: cover;
   background-position: center;
 }
+/* .skew-mask {
+  position: relative;
+  width: 100%;
+  height: 30vh;
+  transform: skewY(-5deg);
+  transform-origin: top left;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+} */
 
 .skew-content {
   position: relative;
@@ -64,6 +75,16 @@ export default {
   font-family: 'Chiron Sung HK', serif;
   text-align: left;
 }
+/* .skew-content {
+  transform: skewY(5deg);
+  height: 100%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: 'Chiron Sung HK', serif;
+  color: beige;
+} */
 
 /* 對齊樣式 */
 .align-left {

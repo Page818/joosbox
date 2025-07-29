@@ -38,14 +38,13 @@ const form = ref({
   text: '',
   links: [],
 })
-let contentId = ''
+
 
 // 取得 FooterContent 資料
 onMounted(async () => {
   try {
     const res = await axios.get('http://localhost:5000/api/footercontent')
     form.value = res.data
-    contentId = res.data._id
   } catch (err) {
     console.error('載入失敗:', err)
   }
@@ -64,7 +63,7 @@ const removeLink = (index) => {
 // 提交儲存
 const submit = async () => {
   try {
-    await axios.put(`http://localhost:5000/api/footercontent/${contentId}`, form.value)
+    await axios.put('http://localhost:5000/api/footercontent', form.value)
     alert('更新成功')
   } catch (err) {
     console.error('更新失敗:', err)

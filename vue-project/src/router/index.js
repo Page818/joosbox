@@ -17,6 +17,7 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminView,
+    meta: { requiresAuth: true }, // ✅ 加這行就能被守衛攔截
   },
 ]
 
@@ -29,6 +30,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('adminToken')
   if (to.meta.requiresAuth && !token) {
+    alert('請先登入管理員帳號')
     next('/admin/login')
   } else {
     next()

@@ -5,7 +5,7 @@
       <div class="main-content">
         <!-- 第一個區塊 -->
         <div class="section">
-          <skew-mask />
+          <skew-mask :maskHeight="20" />
           <angle-background>
             <div id="section01">
               <div class="text-container">
@@ -35,12 +35,13 @@
               </swiper>
             </div>
           </angle-background>
-          <skew-mask />
+          <!-- fix -->
+          <skew-mask :maskHeight="20" />
         </div>
 
         <!-- 第二個區塊 -->
         <div class="section" ref="section2">
-          <skew-mask />
+          <skew-mask :maskHeight="20" :maskColor="'#1c1f1a'" />
           <angle-background
             ref="background2"
             :style="{ backgroundImage: `url(/images/flower-background01.jpg)` }"
@@ -100,7 +101,7 @@
         </div> -->
         <div class="section">
           <skew-mask>
-            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 3rem">項鍊</h1>
+            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 3rem">Collections</h1>
           </skew-mask>
 
           <angle-background backgroundColor="#b6bfa8">
@@ -143,7 +144,9 @@
         <!-- 第四個區塊 -->
         <div class="section">
           <skew-mask>
-            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 4rem">手鍊</h1>
+            <h1 style="font-size: 4rem; font-weight: normal; margin-top: 4rem">
+              JOO’s Treasure for You
+            </h1>
           </skew-mask>
 
           <angle-background
@@ -167,8 +170,13 @@
                 />
               </div>
               <div class="text-container">
-                <h1>精心挑選天然水晶</h1>
-                <h3>製作獨一無二個性手鍊</h3>
+                <h1 class="section04-title">選擇真實，就已足夠獨特</h1>
+                <p class="slogan-text">
+                  <strong>JOO’s BOX</strong> 挑選每一件作品，<br />
+                  不跟風、不妥協，只為做出誠實的選擇。<br />
+                  天然、真實、自由 ——<br />
+                  就像你一樣，有態度，有溫度。
+                </p>
               </div>
             </div>
           </angle-background>
@@ -180,7 +188,7 @@
           <angle-background background-color="#2a2d26">
             <div id="section05" style="overflow: hidden; padding-top: 8rem">
               <div class="footer-container">
-                <h1>關於我們</h1>
+                <h1>JOO's BOX</h1>
 
                 <!-- 品牌介紹文字：動態資料 -->
                 <p>{{ footerContent.text }}</p>
@@ -204,10 +212,21 @@
                 </div>
 
                 <p class="footer-note">© 2025 Joo's Box. All rights reserved.</p>
+                <div class="admin-link-wrapper">
+                  <router-link to="/admin/login" class="admin-login-link">管理員登入</router-link>
+                </div>
               </div>
             </div>
           </angle-background>
-          <skew-mask></skew-mask>
+          <skew-mask :align="'right'" :maskHeight="20">
+            <!-- <router-link
+              to="/admin/login"
+              class="admin-link"
+              style="position: absolute; bottom: 1rem; right: 2rem"
+            >
+              管理員登入
+            </router-link> -->
+          </skew-mask>
         </div>
       </div>
     </v-main>
@@ -672,6 +691,28 @@ export default {
   flex-wrap: wrap;
   gap: 1rem;
 }
+#section04 .section04-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+.slogan-text {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.125rem;
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  font-weight: bolder;
+  color: #3e4b2b;
+  max-width: 36em;
+}
+.slogan-text strong {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+}
+
 #section04 .text-container {
   flex: 1 1 300px;
   padding-right: 2rem;
@@ -817,5 +858,22 @@ export default {
 }
 .footer-links a:hover {
   text-decoration: underline;
+}
+
+.admin-link-wrapper {
+  /* text-align: center; */
+  margin-bottom: 1rem;
+  transform: skewY(5deg);
+}
+
+.admin-login-link {
+  font-size: 0.95rem;
+  color: #969595;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-login-link:hover {
+  color: #60793c;
 }
 </style>

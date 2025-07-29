@@ -1,6 +1,11 @@
+const dotenv = require("dotenv");
+dotenv.config(); // 載入 .env 環境變數
+console.log("目前使用的 JWT_SECRET：", process.env.JWT_SECRET);
+const jwt = require("jsonwebtoken");
+
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
@@ -8,8 +13,6 @@ const showcardRoutes = require("./routes/showcard");
 const topImageRoutes = require("./routes/topImage");
 const footerContentRoutes = require("./routes/footerContent");
 const adminAuthRouter = require("./routes/adminAuth");
-
-dotenv.config(); // 載入 .env 環境變數
 
 // 顯示 Cloudinary 資訊供除錯用
 console.log("Loaded CLOUD_NAME:", process.env.CLOUD_NAME);
@@ -35,5 +38,5 @@ connectDB();
 // 啟動伺服器
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+	console.log(`✅ Server running on http://localhost:${PORT}`);
 });

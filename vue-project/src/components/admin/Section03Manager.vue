@@ -96,6 +96,12 @@ const fetchProducts = async () => {
 const uploadProduct = async () => {
   if (!formRef.value?.validate()) return
 
+  const token = localStorage.getItem('adminToken') // ✅ 從 localStorage 取 token
+  if (!token) {
+    alert('尚未登入，請先登入管理員')
+    return
+  }
+
   const formData = new FormData()
   files.value.forEach((file) => formData.append('images', file))
   Object.entries(product.value).forEach(([key, value]) => formData.append(key, value))
@@ -103,6 +109,9 @@ const uploadProduct = async () => {
   try {
     const res = await fetch('http://localhost:5000/api/products/upload', {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ 加入驗證用 token
+      },
       body: formData,
     })
     if (!res.ok) throw new Error(await res.text())
@@ -119,9 +128,20 @@ const uploadProduct = async () => {
 // 刪除商品
 const deleteProduct = async (id) => {
   if (!confirm('確定要刪除這個商品？')) return
+
+  const token = localStorage.getItem('adminToken')
+  if (!token) {
+    alert('尚未登入，請先登入管理員')
+    return
+  }
+
   try {
     const res = await fetch(`http://localhost:5000/api/products/${id}`, {
       method: 'DELETE',
+
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ 加入驗證用 token
+      },
     })
     if (res.ok) {
       alert('刪除成功')

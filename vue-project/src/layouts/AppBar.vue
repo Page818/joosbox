@@ -47,8 +47,8 @@ export default {
       items: [
         { title: 'TOP', path: '#section01' },
         { title: '品牌理念', path: '#section02' },
-        { title: '氣質項鍊', path: '#section03' },
-        { title: '開運手鍊', path: '#section04' },
+        { title: 'collections', path: '#section03' },
+        { title: 'treasure', path: '#section04' },
         { title: 'About', path: '#section05' },
       ],
     }
