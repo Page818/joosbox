@@ -42,7 +42,7 @@ const form = ref({
 // 取得 FooterContent 資料
 onMounted(async () => {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`)
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/footercontent`)
     form.value = res.data
   } catch (err) {
     console.error('載入失敗:', err)
@@ -62,7 +62,14 @@ const removeLink = (index) => {
 // 提交儲存
 const submit = async () => {
   try {
-    await axios.put(`${import.meta.env.VITE_API_URL}/api/footercontent`, form.value)
+    console.log('PUT /footercontent body:', {
+      text: form.value.text,
+      links: form.value.links,
+    })
+    await axios.put(`${import.meta.env.VITE_API_URL}/api/footercontent`, {
+      text: form.value.text,
+      links: form.value.links,
+    })
     alert('更新成功')
   } catch (err) {
     console.error('更新失敗:', err)
