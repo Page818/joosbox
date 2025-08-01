@@ -82,10 +82,12 @@ const files = ref([])
 const formRef = ref(null)
 const products = ref([])
 
+const API_URL = import.meta.env.VITE_API_URL
+
 // 取得商品資料
 const fetchProducts = async () => {
   try {
-    const res = await fetch('http://localhost:5000/api/products')
+    const res = await fetch(`${API_URL}/api/products`)
     products.value = await res.json()
   } catch (err) {
     console.error('取得商品失敗:', err)
@@ -96,7 +98,7 @@ const fetchProducts = async () => {
 const uploadProduct = async () => {
   if (!formRef.value?.validate()) return
 
-  const token = localStorage.getItem('adminToken') // ✅ 從 localStorage 取 token
+  const token = localStorage.getItem('adminToken')
   if (!token) {
     alert('尚未登入，請先登入管理員')
     return
@@ -107,10 +109,10 @@ const uploadProduct = async () => {
   Object.entries(product.value).forEach(([key, value]) => formData.append(key, value))
 
   try {
-    const res = await fetch('http://localhost:5000/api/products/upload', {
+    const res = await fetch(`${API_URL}/api/products/upload`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`, // ✅ 加入驗證用 token
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
     })
@@ -136,11 +138,10 @@ const deleteProduct = async (id) => {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+    const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'DELETE',
-
       headers: {
-        Authorization: `Bearer ${token}`, // ✅ 加入驗證用 token
+        Authorization: `Bearer ${token}`,
       },
     })
     if (res.ok) {

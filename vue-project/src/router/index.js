@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Index from '../pages/index.vue'
 import AdminLogin from '@/pages/AdminLogin.vue'
 import AdminView from '../pages/AdminView.vue'
@@ -22,7 +22,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 

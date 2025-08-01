@@ -77,7 +77,7 @@ watch(file, (newFile) => {
 
 // 取得圖片
 const fetchImages = async () => {
-  const res = await fetch('http://localhost:5000/api/topimages')
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/topimages`)
   images.value = await res.json()
 }
 
@@ -89,7 +89,7 @@ const upload = async () => {
   formData.append('image', file.value)
 
   try {
-    const res = await fetch('http://localhost:5000/api/topimages', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/topimages`, {
       method: 'POST',
       body: formData,
     })
@@ -108,7 +108,7 @@ const upload = async () => {
 const deleteImage = async (id) => {
   if (!confirm('確定要刪除這張圖片？')) return
   try {
-    const res = await fetch(`http://localhost:5000/api/topimages/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/topimages/${id}`, {
       method: 'DELETE',
     })
     if (res.ok) {

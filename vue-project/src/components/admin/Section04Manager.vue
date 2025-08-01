@@ -43,11 +43,12 @@ import { ref, onMounted } from 'vue'
 
 const file = ref(null)
 const cards = ref([])
+const API_URL = import.meta.env.VITE_API_URL
 
 // 取得所有卡片
 const fetchImages = async () => {
   try {
-    const res = await fetch('http://localhost:5000/api/showcards')
+    const res = await fetch(`${API_URL}/api/showcards`)
     const data = await res.json()
     cards.value = data
   } catch (err) {
@@ -63,7 +64,7 @@ const upload = async () => {
   formData.append('image', file.value)
 
   try {
-    const res = await fetch('http://localhost:5000/api/showcards', {
+    const res = await fetch(`${API_URL}/api/showcards`, {
       method: 'POST',
       body: formData,
     })
@@ -82,7 +83,7 @@ const upload = async () => {
 // 刪除圖片
 const deleteImage = async (id) => {
   try {
-    const res = await fetch(`http://localhost:5000/api/showcards/${id}`, {
+    const res = await fetch(`${API_URL}/api/showcards/${id}`, {
       method: 'DELETE',
     })
     if (res.ok) {
@@ -101,6 +102,7 @@ onMounted(() => {
   fetchImages()
 })
 </script>
+
 <style scoped>
 @import '@/assets/css/admin-common.css';
 </style>
