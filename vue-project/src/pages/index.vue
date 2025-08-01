@@ -265,6 +265,8 @@ export default {
     VueEasyLightbox,
   },
   setup() {
+    // API base url
+    const API_URL = import.meta.env.VITE_API_URL
     // footer 內容
     const footerContent = ref({
       text: '',
@@ -275,8 +277,8 @@ export default {
       Instagram: 'mdi-instagram',
       Facebook: 'mdi-facebook',
       Email: 'mdi-email',
-      Shopee: 'mdi-shopping',
-      Shop: 'mdi-shopping',
+      Shopee: 'mdi-shopping-outline', // 更明確代表 Shopee
+      Shop: 'mdi-store', // 更明確代表一般商店
     }
 
     const images = computed(() => showcardImages.value)
@@ -375,7 +377,7 @@ export default {
     // 抓 footer 內容 (section05 用)
     const fetchFooter = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/footercontent')
+        const res = await fetch(`${API_URL}/api/footercontent`)
         const data = await res.json()
         footerContent.value = data
       } catch (err) {
@@ -383,20 +385,9 @@ export default {
       }
     }
 
-    // 抓產品資料 (section03 用)
-    // const fetchProducts = async () => {
-    //   try {
-    //     const response = await fetch('http://localhost:5000/api/products')
-    //     const data = await response.json()
-    //     products.value = data.filter((p) => Array.isArray(p.images) && p.images.length > 0)
-    //   } catch (error) {
-    //     console.error('獲取產品失敗:', error)
-    //     products.value = []
-    //   }
-    // }
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products')
+        const res = await fetch(`${API_URL}/api/products`)
         products.value = await res.json()
       } catch (err) {
         console.error('取得商品失敗:', err)
@@ -406,7 +397,7 @@ export default {
     // 抓首頁圖片 (section01 用)
     const fetchTopImages = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/topimages')
+        const response = await fetch(`${API_URL}/api/topimages`)
         const data = await response.json()
         topImages.value = data.map((item) => item.imageUrl)
       } catch (error) {
@@ -418,7 +409,7 @@ export default {
     // 抓手鍊圖片 (section04 用)
     const fetchShowcardImages = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/showcards')
+        const response = await fetch(`${API_URL}/api/showcards`)
         const data = await response.json()
         showcardImages.value = data.map((item) => item.imageUrl)
       } catch (error) {
